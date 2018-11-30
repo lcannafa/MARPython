@@ -12,32 +12,41 @@ import quickstart
 def get_doc(tablas):
     now = dt.datetime.now()
     document = Document()
-    ubicacion = "Reportes"
+
+    # Todas las variables deseadas se encuentran en este arreglo.
     arr = ['corriente_x', 'corriente_y', 'corriente_z', 'potencia_x', 'potencia_y', 'potencia_z']
 
+
+    # Abre logs y consigue el numero del reporte.
     with open('LOGS.json') as js:
         data = json.load(js)
         num_reporte = data['reporte']
         data['fecha'] = str(now)
         data['reporte'] = data['reporte'] + 1
 
-    with open('LOGS.json','w') as j:
+    #Actualiza Logs.
+    with open('LOGS.json', 'w') as j:
         json.dump(data, j)
 
     r_str = 'Reporte ' + str(num_reporte)
 
     jsonf = getPython.get_json()
-    dataf = DataFrame(jsonf['rows']).fillna(0)
+    dataf = DataFrame(jsonf['rows']).fillna(0) # fillna(x) --> transforma todos los valores de na (nulos) a el valor x.
+ 
+    # Esta parte crea las graficas, se puee resumir a un ciclo "for" como se desee que el reporte quede.
+    graphic_creator.creador_graficas(dataf, 0, 'corriente_x', 'corriente_y')
+    graphic_creator.creador_graficas(dataf, 1, 'corriente_y', 'corriente_z')
+    graphic_creator.creador_graficas(dataf, 2, 'corriente_x', 'corriente_z')
+    graphic_creator.creador_graficas(dataf, 3, 'potencia_x', 'potencia_y')
+    graphic_creator.creador_graficas(dataf, 4, 'potencia_y', 'potencia_z')
+    graphic_creator.creador_graficas(dataf, 5, 'potencia_x', 'potencia_z')
 
-    graph1 = graphic_creator.creador_graficas(dataf, 0, 'corriente_x', 'corriente_y')
-    graph2 = graphic_creator.creador_graficas(dataf, 1, 'corriente_y', 'corriente_z')
-    graph3 = graphic_creator.creador_graficas(dataf, 2, 'corriente_x', 'corriente_z')
-    graph4 = graphic_creator.creador_graficas(dataf, 3, 'potencia_x', 'potencia_y')
-    graph5 = graphic_creator.creador_graficas(dataf, 4, 'potencia_y', 'potencia_z')
-    graph6 = graphic_creator.creador_graficas(dataf, 5, 'potencia_x', 'potencia_z')
 
+    # ("x" y "p") son nombres de partes del documento.
+    # Para todo el manejo del documento (https://python-docx.readthedocs.io/en/latest/user/quickstart.html)
     x = document.add_heading(str('Reporte ' + str(num_reporte)), 0)
     p = document.add_paragraph(r_str + ' en la fecha ' + str(now))
+
     for x in range(0,5):
         document.add_picture(str('grafica ' + str(x) + '.png'), width=Inches(4.5))
     

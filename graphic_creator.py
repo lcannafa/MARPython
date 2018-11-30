@@ -4,6 +4,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import statistics as st
 
+# creador_graficas
+# Recibe:
+# - df: data frame deseado.
+# - num: número(int) de la grafica.
+# - valor1: string del valor que va quedar de primero.
+# - valor2: string del valor que va quedar de segundo.
+
 def creador_graficas(df, num, valor1, valor2):
     x = df[[valor1, 'timestamp']]
     y = df[[valor2, 'timestamp']]
@@ -36,8 +43,6 @@ def get_moda(df, valor):
         return str('La moda de ' + valor + ' fue de ' + str(moda))
     except st.StatisticsError:
         return 'Hay multiples modas en el valor ' + valor
-
-
 
 def get_media(df, valor):
     x1 = df[valor].values
